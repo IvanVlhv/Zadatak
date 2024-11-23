@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: redis-info
+  namespace: redis
+spec:
+  schedule: "*/1 * * * *" #every minute
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: redis-info
+            image: redis:6.0
+            command:
+            - /bin/sh
+            - -c
+            - |
+              redis-cli -h redis-master.redis.svc.cluster.local INFO replication
+          restartPolicy: OnFailure
